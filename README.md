@@ -26,7 +26,12 @@ pip install -r requirements.txt
 
 Contributing: If you're interested in contributing to PyroEVM, please review our Contribution Guidelines.
 
-Documentation
+2. **Running the Script** Run the script with the following code :-
+```bash
+$ ./src/main.py 600660070200
+```
+
+3. **Documentation**
 For detailed information about PyroEVM's usage, APIs, and architecture, check out our [Documentation](www.google.com).
 
 License
