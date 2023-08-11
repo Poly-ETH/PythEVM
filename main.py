@@ -1,17 +1,15 @@
-from .src import ExecutionContext, decode_opcode
+#!/usr/bin/env python3
+from src import run
 
-def run(code: bytes) -> None:
-    """
-    Executes code in a fresh context
-    """
+import sys
 
-    context = ExecutionContext(code=code)
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: {} <hexdata>".format(sys.argv[0]))
+        sys.exit(1)
 
-    while not context.stopped:
-        pc_before = context.pc
-        instruction = decode_opcode(context)
-        instruction.execute(context)
+    data = sys.argv[1]
+    run(bytes.fromhex(data))
 
-    print(f"{instruction} @ pc={pc_before}")
-    print(context)
-    print()
+if __name__ == "__main__":
+    main()
