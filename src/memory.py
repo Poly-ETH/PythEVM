@@ -16,5 +16,3 @@ class Memory:
             self.memory.extend([0] * (offset - len(self.memory) + 1))
         
         self.memory[offset] = value
-
-        
