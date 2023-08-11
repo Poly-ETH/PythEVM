@@ -1,6 +1,6 @@
 # PythEVM (Ethereum Virtual Machine in Python)
 
-![Project Logo](project_logo.png) <!-- Add your project logo here -->
+![Project Logo](image-1.png) <!-- Add your project logo here -->
 
 PythEVM is an open-source implementation of the Ethereum Virtual Machine (EVM) in Python. It allows developers to interact with the Ethereum blockchain and execute smart contracts using a Python-based environment. This project aims to provide an accessible and versatile platform for Ethereum development and experimentation.
 
