@@ -1,6 +1,5 @@
 from .stack import Stack, InvalidCodeOffset, UnknownOpcode
 from .memory import Memory
-from .helperFunctions import *
 
 class ExecutionContext:
     def __init__(self, code=bytes(), pc=0, stack=Stack(), memory=Memory()) -> None:
