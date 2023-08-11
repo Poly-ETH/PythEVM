@@ -1,4 +1,4 @@
-from .stack import Stack, InvalidCodeOffset, UnknownOpcode
+from .stack import Stack, InvalidCodeOffset, UnknownOpcode, InvalidMemoryAccess
 from .memory import Memory
 
 class ExecutionContext:
@@ -8,6 +8,7 @@ class ExecutionContext:
         self.stack = stack
         self.memory = memory
         self.stopped = False
+        self.return_data = bytes
 
     def stop(self) -> None:
         self.stopped = True
@@ -16,13 +17,16 @@ class ExecutionContext:
         """
         Returns the next num_bytes from the code buffer as an integer and advanced pc by num_bytes
         """
-
         # Read num_bytes from code buffer starting at pc and upto pc + num_bytes, 
         # byteorder="big" means big endian (most significant byte first)
         value = int.from_bytes(self.code[self.pc: self.pc + num_bytes], byteorder="big")
         self.pc += num_bytes
         
         return value
+    
+    def set_return_data(self, offset: int, length: int) -> None:
+        self.stopped = True
+        self.return_data = self.memory.load_range(offset, length)
 
 
 # Abstract class
@@ -67,11 +71,27 @@ MUL = register_instructions(
     lambda ctx: ctx.stack.push((ctx.stack.pop() * ctx.stack.pop()) % 2**256)
 )
 
+MSTORE8 = register_instructions(
+    0x53,
+    "MSTORE8",
+    lambda ctx: ctx.memory.store(ctx.stack.pop(), ctx.stack.pop() % 2**8)
+)
+
+RETURN = register_instructions(
+    0xf3,
+    "RETURN",
+    lambda ctx: ctx.set_return_data(ctx.stack.pop(), ctx.stack.pop())
+)
+
 
 def decode_opcode(context: ExecutionContext) -> Instruction:
-    if context.pc < 0 or context.pc >= len(context.code):
+    if context.pc < 0: # or context.pc >= len(context.code):
         raise InvalidCodeOffset({"code": context.code, "pc": context.pc})
     
+    # section 9.4.1 of the yellow paper, the operation to be executed if pc is outside code is STOP
+    if context.pc >= len(context.code):
+        return STOP
+
     opcode = context.read_code(1)
     instruction = INSTRUCTION_BY_OPCODE.get(opcode)
     
@@ -79,3 +99,11 @@ def decode_opcode(context: ExecutionContext) -> Instruction:
         raise UnknownOpcode({"opcode": opcode})
     
     return instruction
+
+def load_range(self, offset: int, length: int) -> bytes:
+    if offset < 0:
+        raise InvalidMemoryAccess({"offset": offset})
+
+    # we could use a slice here, but this lets us gets 0 bytes if we read past the end of concrete memory
+    return bytes(self.load(x) for x in range(offset, offset + length))
+
