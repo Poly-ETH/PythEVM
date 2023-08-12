@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from src import run
+from src.run import run
 
 import sys
 
