@@ -1,13 +1,4 @@
-InvalidStackItem = type("InvalidStackItem", (Exception,), {})
-StackOverFlow = type("StackOverFlow", (Exception,), {})
-StackUnderFlow = type("StackUnderFlow", (Exception,), {})
-InvalidMemoryAccess = type("InvalidMemoryAccess", (Exception,), {})
-InvalidMemoryValue = type("InvalidMemoryValue", (Exception,), {})
-InvalidCodeOffset = type("InvalidCodeOffset", (Exception,), {})
-UnknownOpcode = type("UnknownOpcode", (Exception,), {})
-
-MAX_UINT256 = 2**256-1
-MAX_UINT8 = 2**8-1
+from .generics import *
 
 class Stack:
     def __init__(self, max_depth=1024) -> None:

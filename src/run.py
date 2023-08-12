@@ -4,7 +4,6 @@ def run(code: bytes) -> None:
     """
     Executes code in a fresh context
     """
-
     context = ExecutionContext(code=code)
 
     while not context.stopped:
@@ -12,6 +11,8 @@ def run(code: bytes) -> None:
         instruction = decode_opcode(context)
         instruction.execute(context)
 
-    print(f"{instruction} @ pc={pc_before}")
-    print(context)
-    print()
+        print(f"{instruction} @ pc={pc_before}")
+        print(context)
+        print()
+
+    print("fOutput: 0x{Context.returndata.hex()}")
