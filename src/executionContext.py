@@ -1,5 +1,6 @@
 from .stack import Stack, InvalidCodeOffset, UnknownOpcode, InvalidMemoryAccess
 from .memory import Memory
+from .opcodesInstructions import *
 
 class ExecutionContext:
     def __init__(self, code=bytes(), pc=0, stack=Stack(), memory=Memory()) -> None:
@@ -33,3 +34,17 @@ class ExecutionContext:
 
     def __repr__(self) -> str:
         return str(self)
+
+
+def valid_jump_destinations(code: bytes) -> set[int]:
+    jumpdests = set()
+    for i in range(len(code)):
+        current_opcode = code[i]
+        if current_opcode == JUMPDEST.opcode:
+            i += current_opcode - PUSH1.opcode + 1
+        elif PUSH1.opcode <= current_opcode <= PUSH32.opcode:
+            i += current_opcode - PUSH1.opcode + 2
+        
+        i += 1
+
+        return jumpdests
